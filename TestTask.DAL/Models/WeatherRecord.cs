@@ -4,9 +4,10 @@ public class WeatherRecord
 {
 	public Guid Id { get; } 
 
-	public DateOnly MeasurementDate { get; set; }
-
-	public TimeOnly MeasurementTime {  set; get; }
+	/// <summary>
+	/// Время и дата замера данных, время по мск.
+	/// </summary>
+	public DateTime MeasurementDate { get; set; }
 
 	/// <summary>
 	/// Температура воздуха, °C
