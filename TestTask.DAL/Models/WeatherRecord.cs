@@ -42,7 +42,7 @@ public class WeatherRecord
 	/// <summary>
 	/// Нижняя граница облачности, м
 	/// </summary>
-	public double LowCloudBoundary { get; set; }
+	public double? LowCloudBoundary { get; set; }
 
 	/// <summary>
 	/// Горизонтальная видимость, км

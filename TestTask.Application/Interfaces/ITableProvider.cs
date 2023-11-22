@@ -1,8 +1,6 @@
-﻿using TestTask.DAL.Models;
+﻿namespace TestTask.Application.Interfaces;
 
-namespace TestTask.Application.Interfaces;
-
-public interface ITableProvider
+public interface ITableProvider<T>
 {
-	Task<IReadOnlyCollection<WeatherRecord>> ParseFromAsync(string tableFilePath, CancellationToken cancellationToken = default);
+	IEnumerable<T> GetFrom(string tableFilePath);
 }
