@@ -1,3 +1,7 @@
+using TestTask.Application;
+using TestTask.DAL;
+
+
 namespace TestTask.Web
 {
 	public class Program
@@ -6,6 +10,8 @@ namespace TestTask.Web
 		{
 			var builder = WebApplication.CreateBuilder(args);
 			builder.Services.AddRazorPages();
+			builder.Services.AddApplicationLayer();
+			builder.Services.AddDAL(builder.Configuration);
 
 			var app = builder.Build();
 

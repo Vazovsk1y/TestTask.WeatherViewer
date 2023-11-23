@@ -6,4 +6,9 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\TestTask.Application\TestTask.Application.csproj" />
+    <ProjectReference Include="..\TestTask.DAL\TestTask.DAL.csproj" />
+  </ItemGroup>
+
 </Project>
