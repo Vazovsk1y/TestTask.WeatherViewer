@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestTask.Application", "Tes
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tester", "Tester\Tester.csproj", "{38C362A5-5C5C-4F51-B82F-B89236501E20}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestTask.Web", "TestTask.Web\TestTask.Web.csproj", "{B5E6A87C-2154-4943-9FFF-A93AAC918CF6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestTask.Web", "TestTask.Web\TestTask.Web.csproj", "{B5E6A87C-2154-4943-9FFF-A93AAC918CF6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
