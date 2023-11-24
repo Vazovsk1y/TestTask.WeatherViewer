@@ -2,3 +2,23 @@
 @model TestTask.Web.Pages.WeatherUploadModel
 @{
 }
+
+<div class="text-center">
+	<h1 class="display-4">Загрузка архива</h1>
+</div>
+
+<div class="container">
+	<div class="mb-3 mt-3">
+		<form method="post" enctype="multipart/form-data">
+			<div class="mb-3">
+				<label class="form-label">Загрузить</label>
+				<input type="file" multiple accept=".xlsx" asp-for="Input.Files" class="form-control" />
+				<span asp-validation-for="Input.Files" class="text-danger"></span>
+			</div>
+
+			<div class="mb-3">
+				<button type="submit" class="btn btn-primary">Подтвердить</button>
+			</div>
+		</form>
+	</div>
+</div>
