@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using TestTask.Application.Interfaces;
 using TestTask.Application.Shared;
 using TestTask.DAL;
@@ -20,6 +21,14 @@ internal class WeatherService : IWeatherService
 		_context = context;
 		_logger = logger;
 		_tableProvider = tableProvider;
+	}
+
+	public async Task<Response<IReadOnlyCollection<WeatherRecordDTO>>> GetAllAsync(CancellationToken cancellationToken = default)
+	{
+		return await _context
+			.WeatherRecords
+			.Select(e => e.ToDTO())
+			.ToListAsync(cancellationToken);
 	}
 
 	public async Task<Response> SaveFromTableAsync(string tableFilePath, CancellationToken cancellationToken = default)

@@ -1,0 +1,46 @@
+﻿@page
+@model ViewModel
+@{
+}
+
+
+@if (Model.BindingEntity.WeatherRecords is not null)
+{
+	<table class="table">
+		<thead>
+			<tr>
+				<th>Дата</th>
+				<th>Время</th>
+				<th>Температура воздуха</th>
+				<th>Влажность воздуха</th>
+				<th>Точка росы</th>
+				<th>Давление воздуха</th>
+				<th>Направление ветра</th>
+				<th>Скорость ветра</th>
+				<th>Облачность</th>
+				<th>Нижняя граница облаков</th>
+				<th>Горизонтальная видимость</th>
+				<th>Феномены</th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var record in Model.BindingEntity.WeatherRecords)
+			{
+				<tr>
+					<td>@record.MeasurementDate</td>
+					<td>@record.MeasurementTime</td>
+					<td>@record.AirTemperature</td>
+					<td>@record.AirHumidity</td>
+					<td>@record.DewPoint</td>
+					<td>@record.AirPressure</td>
+					<td>@record.WindDirections</td>
+					<td>@record.WindSpeed</td>
+					<td>@record.Clouds</td>
+					<td>@record.LowCloudBoundary</td>
+					<td>@record.HorizontalVisibility</td>
+					<td>@record.NaturalPhenomena</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+}

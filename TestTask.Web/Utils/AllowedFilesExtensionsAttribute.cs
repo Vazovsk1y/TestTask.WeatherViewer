@@ -3,11 +3,11 @@ using System.ComponentModel.DataAnnotations;
 
 namespace TestTask.Web.Utils;
 
-public class AllowedFilesTypesAttribute : ValidationAttribute
+public class AllowedFilesExtensionsAttribute : ValidationAttribute
 {
     public required string[] AllowedExtensions { get; init; }
 
-    public AllowedFilesTypesAttribute()
+    public AllowedFilesExtensionsAttribute()
     {
     }
 
