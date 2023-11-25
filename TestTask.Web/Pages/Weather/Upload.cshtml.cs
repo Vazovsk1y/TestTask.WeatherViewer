@@ -55,7 +55,7 @@ public class UploadModel : PageModel
     {
         [Required(ErrorMessage = "Необходимо выбрать хотя бы один файл.")]
         [AllowedFilesExtensions(AllowedExtensions = new string[] { ".xlsx" }, ErrorMessage = "Возможна загрузка только .xlsx файлов.")]
-        [RangeCollectionCount(1, 5, ErrorMessage = "Максимальное количество файлов для загрузки 5.")]
+        [MaximumFilesLength(2097152, ErrorMessage = "Максимально разрешенный размер выгружаемых файла\\ов 2 мегабайта.")]                     // 2 mb
         public IEnumerable<IFormFile>? Files { get; set; }
 
         public IEnumerable<ArchiveUploadResultViewModel>? UploadResults { get; set; }
