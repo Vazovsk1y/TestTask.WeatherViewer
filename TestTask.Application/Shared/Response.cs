@@ -2,7 +2,7 @@
 
 public record Response
 {
-	public string? ErrorMessage { get; }
+	public string ErrorMessage { get; }
 
 	public bool IsSuccess { get; }
 
@@ -11,7 +11,7 @@ public record Response
 	protected Response(bool isSuccess, string? errorMessage) 
 	{
 		IsSuccess = isSuccess;
-		ErrorMessage = errorMessage;
+		ErrorMessage = errorMessage ?? string.Empty;
 	}
 
 	public static Response Success() => new(true, null);

@@ -1,0 +1,37 @@
+﻿@page
+@model WeatherUploadModel
+@{
+}
+
+<div class="text-center">
+	<h1 class="display-4">Загрузка архивов</h1>
+</div>
+
+<div class="container">
+	<div class="mb-3 mt-3">
+		<form method="post" enctype="multipart/form-data" id="archivesForm">
+			<div class="mb-3">
+				<label class="form-label">Загрузить</label>
+				<input type="file" multiple accept=".xlsx" asp-for="Input.Files" id="chooseFiles" class="form-control" />
+				<span asp-validation-for="Input.Files" class="text-danger"></span>
+			</div>
+
+			<div class="mb-3">
+				<button id="sumbitButton" class="btn btn-primary">Подтвердить</button>
+			</div>
+		</form>
+	</div>
+
+	<div class="spinner-border text-primary d-none" role="status" id="loadingIndicator"></div>
+	<span class="sr-only d-none" id="savingSpan">Загрузка...</span>
+</div>
+
+<script type="text/javascript">
+	document.getElementById('sumbitButton').addEventListener('click', function () {
+		document.getElementById('archivesForm').submit();
+		document.getElementById('sumbitButton').setAttribute('disabled', 'true');
+		document.getElementById('chooseFiles').setAttribute('disabled', 'true');
+		document.getElementById('savingSpan').classList.remove('d-none');
+		document.getElementById('loadingIndicator').classList.remove('d-none');
+	});
+</script>
