@@ -1,8 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Configuration;
 using System.ComponentModel.DataAnnotations;
-using System.Diagnostics;
 using TestTask.Application.Interfaces;
 using TestTask.Web.Utils;
 
@@ -11,7 +9,7 @@ namespace TestTask.Web.Pages.Weather;
 public class WeatherUploadModel : PageModel
 {
     [BindProperty]
-    public InputModel Input { get; set; } = new();
+    public BindingModel BindingEntity { get; set; } = new();
 
     private readonly IWeatherService _weatherService;
     private readonly ILogger<WeatherUploadModel> _logger;
@@ -35,7 +33,8 @@ public class WeatherUploadModel : PageModel
         }
 
         string archivesStoragePath = Path.GetTempPath();
-        foreach (var file in Input.Files!)
+        var uploadResults = new List<FileUploadResultViewModel>();
+        foreach (var file in BindingEntity.Files!)
         {
             _logger.LogInformation("Saving archive file at the server {fileName}.", file.FileName);
             string filePath = Path.Combine(archivesStoragePath, $"file.FileName");
@@ -44,17 +43,23 @@ public class WeatherUploadModel : PageModel
             stream.Dispose();
 
             _logger.LogInformation("Parsing xlsx table file starting.");
-            await _weatherService.SaveFromTableAsync(filePath);
+            var result = await _weatherService.SaveFromTableAsync(filePath);
+            uploadResults.Add(new FileUploadResultViewModel(file.FileName, result.IsSuccess));
             System.IO.File.Delete(filePath);
         }
 
-        return RedirectToPage("Index");
+        BindingEntity.UploadResults = uploadResults;
+        return Page();
     }
-    public class InputModel
+    public class BindingModel
     {
         [Required(ErrorMessage = "Необходимо выбрать хотя бы один файл.")]
         [AllowedFilesTypes(AllowedExtensions = new string[] { ".xlsx" }, ErrorMessage = "Возможна загрузка только .xlsx файлов.")]
         [RangeCollectionCount(1, 5, ErrorMessage = "Допустимое кол-во файлов для загрузки 5.")]
         public IEnumerable<IFormFile>? Files { get; set; }
+
+        public IEnumerable<FileUploadResultViewModel>? UploadResults { get; set; }
     }
 }
+public record FileUploadResultViewModel(string FileName, bool SuccessfullyParsed);
+

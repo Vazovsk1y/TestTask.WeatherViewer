@@ -27,13 +27,14 @@ internal class WeatherService : IWeatherService
 		try
 		{
 			await _context.WeatherRecords.AddRangeAsync(_tableProvider.GetFrom(tableFilePath), cancellationToken);
-			await _context.SaveChangesAsync(cancellationToken);
-			return Response.Success();
 		}
 		catch (Exception ex)
 		{
 			_logger.LogError(ex, "Something went wrong");
 			return Response.Failure(ex.Message);
 		}
+
+		await _context.SaveChangesAsync(cancellationToken);
+		return Response.Success();
 	}
 }
