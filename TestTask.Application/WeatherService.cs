@@ -23,12 +23,26 @@ internal class WeatherService : IWeatherService
 		_tableProvider = tableProvider;
 	}
 
-	public async Task<Response<IReadOnlyCollection<WeatherRecordDTO>>> GetAllAsync(CancellationToken cancellationToken = default)
+	public async Task<Response<WeatherPage>> GetAsync(PagingOptions? pagingOptions = null, CancellationToken cancellationToken = default)
 	{
-		return await _context
+		int totalItemsCount = _context.WeatherRecords.Count();
+		int pageIndex = pagingOptions is null ? 1 : pagingOptions.PageIndex;
+		int pageSize = pagingOptions is null ? totalItemsCount : pagingOptions.PageSize;
+		if (pageSize > totalItemsCount)
+		{
+			pageSize = totalItemsCount;
+		}
+
+		var recipesDtos = await _context
 			.WeatherRecords
+			.AsNoTracking()
+			.OrderBy(e => e.MeasurementDate)
+			.Skip((pageIndex - 1) * pageSize)
+			.Take(pageSize)
 			.Select(e => e.ToDTO())
 			.ToListAsync(cancellationToken);
+
+		return Response.Success(new WeatherPage(recipesDtos, totalItemsCount, pageIndex, pageSize));
 	}
 
 	public async Task<Response> SaveFromTableAsync(string tableFilePath, CancellationToken cancellationToken = default)

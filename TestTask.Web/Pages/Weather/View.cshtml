@@ -3,8 +3,14 @@
 @{
 }
 
+@{
+	var prevDisabled = Model.BindingEntity.WeatherPage is { HasPreviousPage: false } ? "disabled" : string.Empty;
+	var nextDisabled = Model.BindingEntity.WeatherPage is { HasNextPage: false } ? "disabled" : string.Empty;
+	var previousPageIndex = Model.BindingEntity.WeatherPage?.PageIndex - 1;
+	var nextPageIndex = Model.BindingEntity.WeatherPage?.PageIndex + 1;
+}
 
-@if (Model.BindingEntity.WeatherRecords is not null)
+@if (Model.BindingEntity.WeatherPage is not null)
 {
 	<table class="table">
 		<thead>
@@ -24,7 +30,7 @@
 			</tr>
 		</thead>
 		<tbody>
-			@foreach (var record in Model.BindingEntity.WeatherRecords)
+			@foreach (var record in Model.BindingEntity.WeatherPage.CurrentItems)
 			{
 				<tr>
 					<td>@record.MeasurementDate</td>
@@ -43,4 +49,21 @@
 			}
 		</tbody>
 	</table>
+
+	<a asp-page="/Weather/View"
+	   asp-route-pageIndex="@previousPageIndex"
+	   class="btn btn-primary @prevDisabled">
+		Previous
+	</a>
+
+	<a asp-page="/Weather/View"
+	   asp-route-pageIndex="@nextPageIndex"
+	   class="btn btn-primary @nextDisabled">
+		Next
+	</a>
+
+	<p>Page number @Model.BindingEntity.WeatherPage?.PageIndex</p>
+	<p>Total pages @Model.BindingEntity.WeatherPage?.TotalPages</p>
 }
+
+

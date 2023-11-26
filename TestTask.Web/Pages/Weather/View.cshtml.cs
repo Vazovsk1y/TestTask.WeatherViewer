@@ -8,26 +8,28 @@ namespace TestTask.Web.Pages.Weather;
 public class ViewModel : PageModel
 {
     private readonly IWeatherService _weatherService;
+	private readonly int DefaultPageSize;
 
-    [BindProperty]
+	[BindProperty]
     public BindingModel BindingEntity { get; set; } = new();
 
-    public ViewModel(IWeatherService weatherService)
+    public ViewModel(IWeatherService weatherService, IConfiguration configuration)
     {
-        _weatherService = weatherService;
+		DefaultPageSize = configuration.GetValue<int>(nameof(DefaultPageSize));
+		_weatherService = weatherService;
     }
 
-    public async Task OnGetAsync()
-    {
-        var result = await _weatherService.GetAllAsync();
-        if (result.IsSuccess)
-        {
-            BindingEntity.WeatherRecords = result.Value;
-        }
-    }
+	public async Task OnGetAsync(int pageIndex = 1)
+	{
+		var result = await _weatherService.GetAsync(new PagingOptions(pageIndex, DefaultPageSize));
+		if (result.IsSuccess)
+		{
+			BindingEntity.WeatherPage = result.Value;
+		}
+	}
 
-    public class BindingModel
+	public class BindingModel
     {
-        public IEnumerable<WeatherRecordDTO>? WeatherRecords { get; set; }
+        public WeatherPage? WeatherPage { get; set; }
     }
 }
