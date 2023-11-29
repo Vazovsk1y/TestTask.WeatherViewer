@@ -23,7 +23,7 @@ internal class WeatherService : IWeatherService
 		_tableProvider = tableProvider;
 	}
 
-	public async Task<Response<WeatherPage>> GetAsync(PagingOptions? pagingOptions = null, CancellationToken cancellationToken = default)
+	public async Task<Response<WeatherPage>> GetAsync(PagingOptions? pagingOptions = null, FilterOptions? filter = null, CancellationToken cancellationToken = default)
 	{
 		int totalItemsCount = _context.WeatherRecords.Count();
 		int pageIndex = pagingOptions is null ? 1 : pagingOptions.PageIndex;
@@ -33,16 +33,28 @@ internal class WeatherService : IWeatherService
 			pageSize = totalItemsCount;
 		}
 
-		var recipesDtos = await _context
-			.WeatherRecords
-			.AsNoTracking()
+		var query = _context.WeatherRecords.AsNoTracking();
+
+		if (filter is not null)
+		{
+			if (filter.ByMonth != Months.None)
+			{
+				query = query.Where(e => e.MeasurementDate.Month == (int)filter!.ByMonth);
+			}
+
+			if (filter.ByYear is not null)
+			{
+				query = query.Where(e => e.MeasurementDate.Year == filter.ByYear);
+			}
+		}
+
+		var pagedQuery =
+			query
 			.OrderBy(e => e.MeasurementDate)
 			.Skip((pageIndex - 1) * pageSize)
-			.Take(pageSize)
-			.Select(e => e.ToDTO())
-			.ToListAsync(cancellationToken);
+			.Take(pageSize);
 
-		return Response.Success(new WeatherPage(recipesDtos, totalItemsCount, pageIndex, pageSize));
+		return Response.Success(new WeatherPage(await pagedQuery.Select(e => e.ToDTO()).ToListAsync(cancellationToken), totalItemsCount, pageIndex, pageSize));
 	}
 
 	public async Task<Response> SaveFromTableAsync(string tableFilePath, CancellationToken cancellationToken = default)
