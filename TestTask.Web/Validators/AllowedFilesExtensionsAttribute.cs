@@ -1,7 +1,6 @@
-﻿using System.Collections;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace TestTask.Web.Utils;
+namespace TestTask.Web.Validators;
 
 public class AllowedFilesExtensionsAttribute : ValidationAttribute
 {

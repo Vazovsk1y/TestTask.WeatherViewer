@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
 using TestTask.Application.Interfaces;
-using TestTask.Web.Utils;
+using TestTask.Web.Validators;
 
 namespace TestTask.Web.Pages.Weather;
 

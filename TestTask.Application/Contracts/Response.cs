@@ -1,4 +1,4 @@
-﻿namespace TestTask.Application.Shared;
+﻿namespace TestTask.Application.Contracts;
 
 public record Response
 {

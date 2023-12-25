@@ -4,8 +4,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace TestTask.DAL;
 
-public static class Extensions
+public static class Registrator
 {
 	public static IServiceCollection AddDAL(this IServiceCollection services, IConfiguration configuration) => services
-		.AddDbContext<TestTaskSecondContext>(e => e.UseSqlServer(configuration.GetConnectionString("Default")));
+		.AddDbContext<TestTaskDbContext>(e => e.UseSqlServer(configuration.GetConnectionString("Default")));
 }

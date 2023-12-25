@@ -10,8 +10,8 @@ using TestTask.DAL;
 
 namespace TestTask.DAL.Migrations
 {
-    [DbContext(typeof(TestTaskSecondContext))]
-    partial class TestTaskSecondContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(TestTaskDbContext))]
+    partial class TestTaskDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
