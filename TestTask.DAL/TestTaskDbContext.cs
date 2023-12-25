@@ -3,10 +3,10 @@ using TestTask.DAL.Models;
 
 namespace TestTask.DAL;
 
-public class TestTaskSecondContext : DbContext
+public class TestTaskDbContext : DbContext
 {
 	public DbSet<WeatherRecord> WeatherRecords { get; set; }
-	public TestTaskSecondContext(DbContextOptions options) : base(options)
+	public TestTaskDbContext(DbContextOptions options) : base(options)
 	{
 	}
 

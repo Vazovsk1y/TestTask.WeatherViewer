@@ -11,7 +11,7 @@ using TestTask.DAL;
 
 namespace TestTask.DAL.Migrations
 {
-    [DbContext(typeof(TestTaskSecondContext))]
+    [DbContext(typeof(TestTaskDbContext))]
     [Migration("20231124174110_Initial")]
     partial class Initial
     {

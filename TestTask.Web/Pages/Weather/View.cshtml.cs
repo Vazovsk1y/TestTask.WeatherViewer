@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using TestTask.Application.Interfaces;
-using TestTask.Application.Shared;
+using TestTask.Application.Contracts;
 
 namespace TestTask.Web.Pages.Weather;
 
@@ -26,10 +26,10 @@ public class ViewModel : PageModel
 	{
 		BindingEntity.SelectedMonth = selectedMonth;
 		BindingEntity.SelectedYear = selectedYear;
-		var result = await _weatherService.GetAsync(new PagingOptions(pageIndex, DefaultPageSize), new FilterOptions(selectedMonth, selectedYear));
+		var result = await _weatherService.GetAsync(new PagingOptions(pageIndex, DefaultPageSize), new WeatherRecordsFilteringOptions(selectedMonth, selectedYear));
 		if (result.IsSuccess)
 		{
-			BindingEntity.WeatherPage = result.Value;
+			BindingEntity.Page = result.Value;
 		}
 	}
 
@@ -37,7 +37,7 @@ public class ViewModel : PageModel
     {
 		public IEnumerable<SelectListItem> Years { get; set; } = Enumerable.Range(2000, DateTime.Now.Year - 2000).Select(e => new SelectListItem { Value = e.ToString(), Text = e.ToString() });
 
-		public WeatherPage? WeatherPage { get; set; }
+		public WeatherRecordsPage? Page { get; set; }
 
 		public Months SelectedMonth { get; set; }
 

@@ -22,9 +22,10 @@ namespace TestTask.Web
 				app.UseHsts();
 			}
 
-			using var scope = app.Services.CreateScope();
-			var context = scope.ServiceProvider.GetRequiredService<TestTaskSecondContext>();
+			var scope = app.Services.CreateScope();
+			var context = scope.ServiceProvider.GetRequiredService<TestTaskDbContext>();
 			await context.Database.MigrateAsync();
+			scope.Dispose();
 
 			app.UseHttpsRedirection();
 			app.UseStaticFiles();

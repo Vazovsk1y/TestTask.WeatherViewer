@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace TestTask.Web.Utils;
+namespace TestTask.Web.Validators;
 
 public class MaximumFilesLengthAttribute : ValidationAttribute
 {

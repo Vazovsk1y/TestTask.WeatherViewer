@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace TestTask.Application.Shared;
+namespace TestTask.Application.Contracts;
 
-public record FilterOptions(Months ByMonth, int? ByYear);
+public record WeatherRecordsFilteringOptions(Months ByMonth, int? ByYear);
 
 public enum Months
 {

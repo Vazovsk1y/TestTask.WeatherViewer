@@ -1,43 +1,41 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using System.Text;
-using TestTask.Application.Interfaces;
-using TestTask.Application.Shared;
+﻿using System.Text;
+using TestTask.Application.Contracts;
 using TestTask.DAL.Models;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace TestTask.Application;
 
 public static class Extensions
 {
-	public static IServiceCollection AddApplicationLayer(this IServiceCollection services) => services
-		.AddTransient<ITableProvider<WeatherRecord>, XlsxWeatherTableProvider>()
-		.AddScoped<IWeatherService, WeatherService>();
-
-	public static WeatherRecordDTO ToDTO(this WeatherRecord record)
+	public static IQueryable<T> ApplyPaging<T>(this IQueryable<T> collection, PagingOptions? pagingOptions)
 	{
-		return new WeatherRecordDTO
+		if (pagingOptions is null)
 		{
-			MeasurementDate = new DateOnly(record.MeasurementDate.Year, record.MeasurementDate.Month, record.MeasurementDate.Day),
-			MeasurementTime = new TimeOnly(record.MeasurementDate.Hour, record.MeasurementDate.Minute),
-			AirHumidity = record.AirHumidity,
-			AirTemperature = record.AirTemperature,
-			AirPressure = record.AirPressure,
-			Clouds = record.Clouds,
-			DewPoint = record.DewPoint,
-			HorizontalVisibility = record.HorizontalVisibility,
-			LowCloudBoundary = record.LowCloudBoundary,
-			NaturalPhenomena = record.NaturalPhenomena,
-			WindSpeed = record.WindSpeed,
-			WindDirections = ToWindDirectionsString(record)
-		};
-	}
-
-	private static string? ToWindDirectionsString(WeatherRecord record)
-	{
-		if (record.MainWindDirection == WindDirection.Undefined && record.SecondaryWindDirection == WindDirection.Undefined)
-		{
-			return null;
+			return collection;
 		}
 
-		return record.SecondaryWindDirection == WindDirection.Undefined ? $"{record.MainWindDirection}" : $"{record.MainWindDirection},{record.SecondaryWindDirection}";
+		return collection
+			.Skip((pagingOptions.PageIndex - 1) * pagingOptions.PageSize)
+			.Take(pagingOptions.PageSize);
+	}
+
+	public static IQueryable<WeatherRecord> ApplyFiltering(this IQueryable<WeatherRecord> weatherRecords, WeatherRecordsFilteringOptions? filteringOptions)
+	{
+		if (filteringOptions is null)
+		{
+			return weatherRecords;
+		}
+
+		if (filteringOptions.ByMonth != Months.None)
+		{
+			weatherRecords = weatherRecords.Where(e => e.MeasurementDate.Month == (int)filteringOptions!.ByMonth);
+		}
+
+		if (filteringOptions.ByYear is not null)
+		{
+			weatherRecords = weatherRecords.Where(e => e.MeasurementDate.Year == filteringOptions.ByYear);
+		}
+
+		return weatherRecords;
 	}
 }

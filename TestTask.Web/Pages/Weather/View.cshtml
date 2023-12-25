@@ -1,17 +1,17 @@
 ﻿@page
-@using TestTask.Application.Shared;
+@using TestTask.Application.Contracts;
 @model ViewModel
 @{
 }
 
 @{
-	var prevDisabled = Model.BindingEntity.WeatherPage is { HasPreviousPage: false } ? "disabled" : string.Empty;
-	var nextDisabled = Model.BindingEntity.WeatherPage is { HasNextPage: false } ? "disabled" : string.Empty;
-	var previousPageIndex = Model.BindingEntity.WeatherPage?.PageIndex - 1;
-	var nextPageIndex = Model.BindingEntity.WeatherPage?.PageIndex + 1;
+	var prevDisabled = Model.BindingEntity.Page is { HasPreviousPage: false } ? "disabled" : string.Empty;
+	var nextDisabled = Model.BindingEntity.Page is { HasNextPage: false } ? "disabled" : string.Empty;
+	var previousPageIndex = Model.BindingEntity.Page?.PageIndex - 1;
+	var nextPageIndex = Model.BindingEntity.Page?.PageIndex + 1;
 }
 
-@if (Model.BindingEntity.WeatherPage is not null)
+@if (Model.BindingEntity.Page is not null)
 {
 	<select asp-for="BindingEntity.SelectedMonth" asp-items="Html.GetEnumSelectList<Months>()" onchange="applyFilters()"></select>
 	<select asp-for="BindingEntity.SelectedYear" asp-items="Model.BindingEntity.Years" onchange="applyFilters()">
@@ -36,7 +36,7 @@
 			</tr>
 		</thead>
 		<tbody>
-			@foreach (var record in Model.BindingEntity.WeatherPage.CurrentItems)
+			@foreach (var record in Model.BindingEntity.Page.Items)
 			{
 				<tr>
 					<td>@record.MeasurementDate</td>
@@ -72,14 +72,14 @@
 		Next
 	</a>
 
-	<p>Page @Model.BindingEntity.WeatherPage?.PageIndex of @Model.BindingEntity.WeatherPage?.TotalPages</p>
+	<p>Page @Model.BindingEntity.Page?.PageIndex of @Model.BindingEntity.Page?.TotalPages</p>
 }
 
 <script type="text/javascript">
 	function applyFilters() {
 		var selectedMonth = document.getElementById("BindingEntity_SelectedMonth").value;
 		var selectedYear = document.getElementById("BindingEntity_SelectedYear").value;
-		var pageIndex = '@Model.BindingEntity.WeatherPage?.PageIndex';
+		var pageIndex = '@Model.BindingEntity.Page?.PageIndex';
 
 		var url = `/Weather/View?selectedMonth=${selectedMonth}&pageIndex=${pageIndex}`;
 		if (selectedYear !== '')
