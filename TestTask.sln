@@ -7,8 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestTask.DAL", "TestTask.DA
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestTask.Application", "TestTask.Application\TestTask.Application.csproj", "{0782ADB2-36F5-4F84-8A47-D02FCC9778BE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tester", "Tester\Tester.csproj", "{38C362A5-5C5C-4F51-B82F-B89236501E20}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestTask.Web", "TestTask.Web\TestTask.Web.csproj", "{B5E6A87C-2154-4943-9FFF-A93AAC918CF6}"
 EndProject
 Global
@@ -25,10 +23,6 @@ Global
 		{0782ADB2-36F5-4F84-8A47-D02FCC9778BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0782ADB2-36F5-4F84-8A47-D02FCC9778BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0782ADB2-36F5-4F84-8A47-D02FCC9778BE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{38C362A5-5C5C-4F51-B82F-B89236501E20}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{38C362A5-5C5C-4F51-B82F-B89236501E20}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{38C362A5-5C5C-4F51-B82F-B89236501E20}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{38C362A5-5C5C-4F51-B82F-B89236501E20}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B5E6A87C-2154-4943-9FFF-A93AAC918CF6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B5E6A87C-2154-4943-9FFF-A93AAC918CF6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B5E6A87C-2154-4943-9FFF-A93AAC918CF6}.Release|Any CPU.ActiveCfg = Release|Any CPU
