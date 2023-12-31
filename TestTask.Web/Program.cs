@@ -1,38 +1,37 @@
-using Microsoft.EntityFrameworkCore;
 using TestTask.Application;
 using TestTask.DAL;
 
 
-namespace TestTask.Web
+namespace TestTask.Web;
+
+public class Program
 {
-	public class Program
+	public static void Main(string[] args)
 	{
-		public static async Task Main(string[] args)
+		var builder = WebApplication.CreateBuilder(args);
+		builder.Services.AddRazorPages();
+		builder.Services.AddApplicationLayer();
+		builder.Services.AddDAL(builder.Configuration);
+
+		var app = builder.Build();
+
+		if (!app.Environment.IsDevelopment())
 		{
-			var builder = WebApplication.CreateBuilder(args);
-			builder.Services.AddRazorPages();
-			builder.Services.AddApplicationLayer();
-			builder.Services.AddDAL(builder.Configuration);
-
-			var app = builder.Build();
-
-			if (!app.Environment.IsDevelopment())
-			{
-				app.UseExceptionHandler("/Error");
-				app.UseHsts();
-			}
-
-			var scope = app.Services.CreateScope();
-			var context = scope.ServiceProvider.GetRequiredService<TestTaskDbContext>();
-			await context.Database.MigrateAsync();
-			scope.Dispose();
-
-			app.UseHttpsRedirection();
-			app.UseStaticFiles();
-			app.UseRouting();
-			app.UseAuthorization();
-			app.MapRazorPages();
-			app.Run();
+			app.UseExceptionHandler("/Error");
+			app.UseHsts();
 		}
+
+		app.UseHttpsRedirection();
+		app.UseStaticFiles();
+		app.UseRouting();
+		app.UseAuthorization();
+		app.MapRazorPages();
+
+		if (app.Environment.IsDevelopment())
+		{
+			app.MigrateDatabase();
+		}
+
+		app.Run();
 	}
 }
