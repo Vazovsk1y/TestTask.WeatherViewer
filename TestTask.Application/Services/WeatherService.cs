@@ -4,23 +4,24 @@ using TestTask.Application.Interfaces;
 using TestTask.Application.Contracts;
 using TestTask.DAL;
 using TestTask.DAL.Models;
+using TestTask.Application.Services.Interfaces;
 
-namespace TestTask.Application.Implementations;
+namespace TestTask.Application.Services;
 
 internal class WeatherService : IWeatherService
 {
     private readonly TestTaskDbContext _context;
     private readonly ILogger<WeatherService> _logger;
-    private readonly ITableProvider<WeatherRecord> _tableProvider;
+    private readonly IFileParser<WeatherRecord> _fileParser;
 
     public WeatherService(
         TestTaskDbContext context,
         ILogger<WeatherService> logger,
-        ITableProvider<WeatherRecord> tableProvider)
+        IFileParser<WeatherRecord> tableProvider)
     {
         _context = context;
         _logger = logger;
-        _tableProvider = tableProvider;
+        _fileParser = tableProvider;
     }
 
     public async Task<Response<WeatherRecordsPage>> GetAsync(PagingOptions? pagingOptions = null, WeatherRecordsFilteringOptions? filteringOptions = null, CancellationToken cancellationToken = default)
@@ -35,6 +36,7 @@ internal class WeatherService : IWeatherService
             _context
             .WeatherRecords
             .AsNoTracking()
+            .OrderBy(e => e.MeasurementDate)
             .ApplyFiltering(filteringOptions)
             .ApplyPaging(pagingOptions)
             .Select(e => e.ToDTO())
@@ -43,20 +45,21 @@ internal class WeatherService : IWeatherService
         return new WeatherRecordsPage(result, totalCount, pagingOptions);
     }
 
-    public async Task<Response> SaveFromTableAsync(string tableFilePath, CancellationToken cancellationToken = default)
+    public async Task<Response> SaveFromFileAsync(string tableFilePath, CancellationToken cancellationToken = default)
     {
         try
         {
-            var records = _tableProvider.GetFrom(tableFilePath);
-			await _context.WeatherRecords.AddRangeAsync(records, cancellationToken);
+            var records = _fileParser.GetFromFile(tableFilePath);
+
+            _context.WeatherRecords.AddRange(records);
+            await _context.SaveChangesAsync(cancellationToken);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Something went wrong while trying to save from table.");
+            _logger.LogError(ex, "Something went wrong while trying to save from file.");
             return Response.Failure(ex.Message);
         }
 
-        await _context.SaveChangesAsync(cancellationToken);
         return Response.Success();
     }
 }

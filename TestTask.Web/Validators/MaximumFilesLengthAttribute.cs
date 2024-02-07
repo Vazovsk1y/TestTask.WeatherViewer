@@ -4,25 +4,27 @@ namespace TestTask.Web.Validators;
 
 public class MaximumFilesLengthAttribute : ValidationAttribute
 {
-	private readonly long _maximumFilesLengthBytes;
+	// bytes
+	private readonly long _maximumFilesLength;
 
-	public MaximumFilesLengthAttribute(long maximumFilesLengthBytes)
+	public MaximumFilesLengthAttribute(long maximumFilesLength)
 	{
-		if (maximumFilesLengthBytes < 0)
+		if (maximumFilesLength < 0)
 		{
-			throw new ArgumentException("maximum file length must be non-negative number.");
+			throw new ArgumentException("Maximum file length must be non-negative number.");
 		}
 
-		_maximumFilesLengthBytes = maximumFilesLengthBytes;
-		ErrorMessage = $"Files size limit is {_maximumFilesLengthBytes} bytes.";
+		_maximumFilesLength = maximumFilesLength;
+		ErrorMessage = $"Files size limit is {_maximumFilesLength} bytes.";
 	}
 
 	protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
 	{
 		IFormFile? file = value as IFormFile;
+
 		if (file is not null)
 		{
-			if (file.Length > _maximumFilesLengthBytes)
+			if (file.Length > _maximumFilesLength)
 			{
 				return new ValidationResult(ErrorMessage);
 			}
@@ -34,7 +36,7 @@ public class MaximumFilesLengthAttribute : ValidationAttribute
 		if (files is not null)
 		{
 			var sum = files.Select(e => e.Length).Sum();
-			if (sum > _maximumFilesLengthBytes)
+			if (sum > _maximumFilesLength)
 			{
 				return new ValidationResult(ErrorMessage);
 			}

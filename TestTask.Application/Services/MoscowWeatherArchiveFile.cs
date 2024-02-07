@@ -1,83 +1,8 @@
 ﻿using NPOI.SS.UserModel;
-using NPOI.XSSF.UserModel;
-using TestTask.Application.Interfaces;
-using TestTask.DAL.Models;
 
-namespace TestTask.Application.Implementations;
+namespace TestTask.Application.Services;
 
-public class XlsxWeatherTableProvider : ITableProvider<WeatherRecord>
-{
-    private static readonly Dictionary<string, WindDirection> _windDirections = new()
-    {
-        { "С", WindDirection.North },
-        { "Ю", WindDirection.South },
-        { "З", WindDirection.West },
-        { "В", WindDirection.East },
-        { "СЗ", WindDirection.NorthWest },
-        { "СВ", WindDirection.NorthEast },
-        { "ЮЗ", WindDirection.SouthWest },
-        { "ЮВ", WindDirection.SouthEast },
-        { "штиль", WindDirection.Calm },
-    };
-
-    public IEnumerable<WeatherRecord> GetFrom(string tableFilePath)
-    {
-        var fileInfo = new FileInfo(tableFilePath);
-        using var workbook = new XSSFWorkbook(fileInfo.OpenRead());
-        var sheets = new List<ISheet>();
-        for (int i = 0; i < workbook.NumberOfSheets; i++)
-        {
-            sheets.Add(workbook.GetSheetAt(i));
-        }
-
-        foreach (var sheet in sheets)
-        {
-            foreach (var row in MoscowWeatherTableParser.GetRows(sheet))
-            {
-                yield return ToWeatherRecord(row);
-            }
-        }
-    }
-
-    private static WeatherRecord ToWeatherRecord(MoscowWeatherTableParser.Row row)
-    {
-        var (main, secondary) = ToWindDirectrions(row.WindDirections);
-        return new WeatherRecord
-        {
-            AirHumidity = row.AirHumidity,
-            AirPressure = row.AirPressure,
-            AirTemperature = row.AirTemperature,
-            Clouds = row.Clouds,
-            LowCloudBoundary = row.LowCloudBoundary,
-            DewPoint = row.DewPoint,
-            HorizontalVisibility = row.HorizontalVisibility,
-            NaturalPhenomena = row.NaturalPhenomena,
-            WindSpeed = row.WindSpeed,
-            MeasurementDate = new DateTime(row.MeasurementDate.Year, row.MeasurementDate.Month, row.MeasurementDate.Day, row.MeasurementTime.Hour, row.MeasurementTime.Minute, row.MeasurementTime.Second),
-            MainWindDirection = main,
-            SecondaryWindDirection = secondary,
-        };
-    }
-
-    private static (WindDirection main, WindDirection secondary) ToWindDirectrions(string? value)
-    {
-        if (string.IsNullOrWhiteSpace(value))
-        {
-            return (WindDirection.Undefined, WindDirection.Undefined);
-        }
-
-        var directions = value.Split(",", StringSplitOptions.RemoveEmptyEntries).ToList();
-
-        return directions.Count switch
-        {
-            1 => (_windDirections[directions[0]], WindDirection.Undefined),
-            2 => (_windDirections[directions[0]], _windDirections[directions[1]]),
-            _ => (WindDirection.Undefined, WindDirection.Undefined),
-        };
-    }
-}
-
-internal class MoscowWeatherTableParser
+internal static class MoscowWeatherArchiveFile
 {
     public const int SheetsCount = 12;
 
@@ -107,10 +32,14 @@ internal class MoscowWeatherTableParser
 
     public const int NaturalPhenomenaIndex = 11;
 
+    public static readonly TimeSpan TimeOffset = TimeSpan.FromHours(3); // +3 часа смещения от UTC (время по мск).
+
+    private const int SKIP_COUNT = 4;
+
     public static IEnumerable<Row> GetRows(ISheet sheet)
     {
         int rowsCount = sheet.PhysicalNumberOfRows;
-        for (int i = 4; i < rowsCount; i++)                        // start from fourth row to skip sheet info before first actual information starts
+        for (int i = SKIP_COUNT; i < rowsCount; i++)                        // start from fourth row to skip sheet info before first actual information starts
         {
             var row = sheet.GetRow(i);
             var cells = row.Cells;

@@ -5,16 +5,16 @@
 }
 
 @{
-	var prevDisabled = Model.BindingEntity.Page is { HasPreviousPage: false } ? "disabled" : string.Empty;
-	var nextDisabled = Model.BindingEntity.Page is { HasNextPage: false } ? "disabled" : string.Empty;
-	var previousPageIndex = Model.BindingEntity.Page?.PageIndex - 1;
-	var nextPageIndex = Model.BindingEntity.Page?.PageIndex + 1;
+	var prevDisabled = Model.BindingModel.Page is { HasPreviousPage: false } ? "disabled" : string.Empty;
+	var nextDisabled = Model.BindingModel.Page is { HasNextPage: false } ? "disabled" : string.Empty;
+	var previousPageIndex = Model.BindingModel.Page?.PageIndex - 1;
+	var nextPageIndex = Model.BindingModel.Page?.PageIndex + 1;
 }
 
-@if (Model.BindingEntity.Page is not null)
+@if (Model.BindingModel.Page is not null)
 {
-	<select asp-for="BindingEntity.SelectedMonth" asp-items="Html.GetEnumSelectList<Months>()" onchange="applyFilters()"></select>
-	<select asp-for="BindingEntity.SelectedYear" asp-items="Model.BindingEntity.Years" onchange="applyFilters()">
+	<select asp-for="BindingModel.SelectedMonth" asp-items="Html.GetEnumSelectList<Months>()" onchange="applyFilters()"></select>
+	<select asp-for="BindingModel.SelectedYear" asp-items="ViewModel.Years" onchange="applyFilters()">
 		<option value="">Не выбрано</option>
 	</select>
 
@@ -36,7 +36,7 @@
 			</tr>
 		</thead>
 		<tbody>
-			@foreach (var record in Model.BindingEntity.Page.Items)
+			@foreach (var record in Model.BindingModel.Page.Items)
 			{
 				<tr>
 					<td>@record.MeasurementDate</td>
@@ -57,29 +57,29 @@
 	</table>
 
 	<a asp-page="/Weather/View"
-	   asp-route-selectedMonth="@Model.BindingEntity.SelectedMonth"
+	   asp-route-selectedMonth="@Model.BindingModel.SelectedMonth"
 	   asp-route-pageIndex="@previousPageIndex"
-	   asp-route-selectedYear="@Model.BindingEntity.SelectedYear"
+	   asp-route-selectedYear="@Model.BindingModel.SelectedYear"
 	   class="btn btn-primary @prevDisabled">
 		Previous
 	</a>
 
 	<a asp-page="/Weather/View"
-	   asp-route-selectedMonth="@Model.BindingEntity.SelectedMonth"
+	   asp-route-selectedMonth="@Model.BindingModel.SelectedMonth"
 	   asp-route-pageIndex="@nextPageIndex"
-	   asp-route-selectedYear="@Model.BindingEntity.SelectedYear"
+	   asp-route-selectedYear="@Model.BindingModel.SelectedYear"
 	   class="btn btn-primary @nextDisabled">
 		Next
 	</a>
 
-	<p>Page @Model.BindingEntity.Page?.PageIndex of @Model.BindingEntity.Page?.TotalPages</p>
+	<p>Page @Model.BindingModel.Page?.PageIndex of @Model.BindingModel.Page?.TotalPages</p>
 }
 
 <script type="text/javascript">
 	function applyFilters() {
-		var selectedMonth = document.getElementById("BindingEntity_SelectedMonth").value;
-		var selectedYear = document.getElementById("BindingEntity_SelectedYear").value;
-		var pageIndex = '@Model.BindingEntity.Page?.PageIndex';
+		var selectedMonth = document.getElementById("BindingModel_SelectedMonth").value;
+		var selectedYear = document.getElementById("BindingModel_SelectedYear").value;
+		var pageIndex = '@Model.BindingModel.Page?.PageIndex';
 
 		var url = `/Weather/View?selectedMonth=${selectedMonth}&pageIndex=${pageIndex}`;
 		if (selectedYear !== '')
