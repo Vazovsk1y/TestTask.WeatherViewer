@@ -53,8 +53,8 @@ namespace TestTask.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("MeasurementDate")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset>("MeasurementDate")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<string>("NaturalPhenomena")
                         .HasColumnType("nvarchar(max)");

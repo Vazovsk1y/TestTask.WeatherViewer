@@ -16,7 +16,7 @@ namespace TestTask.DAL.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    MeasurementDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    MeasurementDate = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     AirTemperature = table.Column<double>(type: "float", nullable: false),
                     AirHumidity = table.Column<double>(type: "float", nullable: false),
                     DewPoint = table.Column<double>(type: "float", nullable: false),

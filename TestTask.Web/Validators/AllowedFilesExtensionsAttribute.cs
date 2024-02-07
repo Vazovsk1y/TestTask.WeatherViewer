@@ -41,6 +41,6 @@ public class AllowedFilesExtensionsAttribute : ValidationAttribute
 
     public string GetErrorMessage()
     {
-        return string.IsNullOrWhiteSpace(ErrorMessage) ? $"Допустимые расширения файлов: {string.Join(", ", AllowedExtensions)}" : ErrorMessage;
+        return string.IsNullOrWhiteSpace(ErrorMessage) ? $"Недопустимые расширения файлов." : ErrorMessage;
     }
 }

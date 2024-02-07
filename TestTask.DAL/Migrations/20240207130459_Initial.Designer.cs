@@ -12,7 +12,7 @@ using TestTask.DAL;
 namespace TestTask.DAL.Migrations
 {
     [DbContext(typeof(TestTaskDbContext))]
-    [Migration("20231124174110_Initial")]
+    [Migration("20240207130459_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -56,8 +56,8 @@ namespace TestTask.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("MeasurementDate")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset>("MeasurementDate")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<string>("NaturalPhenomena")
                         .HasColumnType("nvarchar(max)");
