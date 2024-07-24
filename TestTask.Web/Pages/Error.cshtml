@@ -1,26 +1,30 @@
 ﻿@page
 @model ErrorModel
 @{
-    ViewData["Title"] = "Error";
+ViewData["Title"] = "Error";
 }
 
-<h1 class="text-danger">Error.</h1>
-<h2 class="text-danger">An error occurred while processing your request.</h2>
+<div class="container mt-5">
+    <div class="text-center">
+        <h1 class="display-4 text-danger">Something went wrong</h1>
+        <p class="lead text-secondary">We're sorry, but an error occurred while processing your request.</p>
+    </div>
 
-@if (Model.ShowRequestId)
-{
-    <p>
-        <strong>Request ID:</strong> <code>@Model.RequestId</code>
-    </p>
-}
+    @if (Model.ShowRequestId)
+    {
+    <div class="text-center mt-3">
+        <p>
+            <strong>Request Id:</strong> <code>@Model.RequestId</code>
+        </p>
+    </div>
+    }
 
-<h3>Development Mode</h3>
-<p>
-    Swapping to the <strong>Development</strong> environment displays detailed information about the error that occurred.
-</p>
-<p>
-    <strong>The Development environment shouldn't be enabled for deployed applications.</strong>
-    It can result in displaying sensitive information from exceptions to end users.
-    For local debugging, enable the <strong>Development</strong> environment by setting the <strong>ASPNETCORE_ENVIRONMENT</strong> environment variable to <strong>Development</strong>
-    and restarting the app.
-</p>
+    <div class="text-center mt-4">
+        <a href="/" class="btn btn-primary">Go to Homepage</a>
+    </div>
+
+    <div class="alert alert-info mt-4" role="alert">
+        <h4 class="alert-heading">Need Help?</h4>
+        <p>If the issue persists, please contact our support team and provide the Request Id above.</p>
+    </div>
+</div>

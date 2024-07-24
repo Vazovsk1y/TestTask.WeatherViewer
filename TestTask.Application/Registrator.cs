@@ -1,14 +1,16 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using TestTask.Application.Interfaces;
+﻿using System.Reflection;
+using FluentValidation;
+using Microsoft.Extensions.DependencyInjection;
+using TestTask.Application.Contracts;
 using TestTask.Application.Services;
 using TestTask.Application.Services.Interfaces;
-using TestTask.DAL.Models;
 
 namespace TestTask.Application;
 
 public static class Registrator
 {
 	public static IServiceCollection AddApplicationLayer(this IServiceCollection services) => services
-		.AddTransient<IFileParser<WeatherRecord>, XlsxFileParser>()
-		.AddScoped<IWeatherService, WeatherService>();
+		.AddTransient<IFileReader<WeatherRecordAddDTO>, WeatherRecordAddDTOXlsxReader>()
+		.AddScoped<IWeatherService, WeatherService>()
+		.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 }

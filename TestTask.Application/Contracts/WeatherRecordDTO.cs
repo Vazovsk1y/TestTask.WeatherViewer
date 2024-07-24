@@ -1,28 +1,26 @@
 ﻿namespace TestTask.Application.Contracts;
 
-public class WeatherRecordDTO
+public record WeatherRecordDTO
 {
-	public DateOnly MeasurementDate { get; set; }
+	public required DateTimeOffset MeasurementDate { get; init; }
 
-	public TimeOnly MeasurementTime { get; set; }
+	public required double AirTemperature { get; init; }
 
-	public double AirTemperature { get; set; }
+	public required double AirHumidity { get; init; }
 
-	public double AirHumidity { get; set; }
+	public required double DewPoint { get; init; }
 
-	public double DewPoint { get; set; }
+	public required double AirPressure { get; init; }
 
-	public double AirPressure { get; set; }
+	public required string? WindDirection { get; init; }
 
-	public string? WindDirections { get; set; }
+	public required double? WindSpeed { get; init; }
 
-	public double? WindSpeed { get; set; }
+	public required double? Clouds { get; init; }
 
-	public double? Clouds { get; set; }
+	public required double? LowCloudBoundary { get; init; }
 
-	public double? LowCloudBoundary { get; set; }
+	public required double? HorizontalVisibility { get; init; }
 
-	public double? HorizontalVisibility { get; set; }
-
-	public string? NaturalPhenomena { get; set; }
+	public required string? WeatherPhenomena { get; init; }
 }
