@@ -1,0 +1,57 @@
+﻿@page
+@model TestTask.Web.Pages.Weather.Archives.Add
+
+@{
+    ViewData["Title"] = "Add weather archive";
+}
+
+<div class="text-center mt-5">
+    <h1 class="display-4">Weather archive adding</h1>
+</div>
+
+<div class="container mt-4">
+    <div class="mb-4">
+        <form method="post" enctype="multipart/form-data" id="addArchiveForm">
+            <div class="mb-3">
+                <label for="titleInput" class="form-label">Title:</label>
+                <input type="text" asp-for="BindingModel.Title" id="titleInput" class="form-control" placeholder="Enter title"/>
+                <span asp-validation-for="BindingModel.Title" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label for="selectLocality" class="form-label">Locality:</label>
+                <select id="selectLocality" asp-for="BindingModel.SelectedLocality" asp-items="Add.LocalitiesKeys" class="form-select">
+                    <option value="" disabled selected>Select a locality</option>
+                </select>
+                <span asp-validation-for="BindingModel.SelectedLocality" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label for="selectFileInput" class="form-label">File:</label>
+                <input type="file" accept=".xlsx" asp-for="BindingModel.SelectedFile" id="selectFileInput" class="form-control"/>
+                <span asp-validation-for="BindingModel.SelectedFile" class="text-danger"></span>
+            </div>
+
+            <div class="text-center">
+                <button id="submitButton" class="btn btn-primary">Submit</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="text-center">
+        <div class="spinner-border text-primary d-none" role="status" id="loadingIndicator"></div>
+        <span class="sr-only d-none" id="savingSpan">Loading...</span>
+    </div>
+</div>
+
+<script type="text/javascript">
+    document.getElementById('submitButton').addEventListener('click', function () {
+        document.getElementById('addArchiveForm').submit();
+        document.getElementById('submitButton').setAttribute('disabled', 'true');
+        document.getElementById('selectFileInput').setAttribute('disabled', 'true');
+        document.getElementById('titleInput').setAttribute('disabled', 'true');
+        document.getElementById('selectLocality').setAttribute('disabled', 'true');
+        document.getElementById('savingSpan').classList.remove('d-none');
+        document.getElementById('loadingIndicator').classList.remove('d-none');
+    });
+</script>

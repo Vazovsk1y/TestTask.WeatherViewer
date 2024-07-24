@@ -1,37 +1,37 @@
 using TestTask.Application;
-using TestTask.DAL;
+using TestTask.DAL.PostgreSQL.Extensions;
+using TestTask.DAL.PostgreSQL.Infrastructure;
+using TestTask.Web.Extensions;
 
+var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddRazorPages();
+builder.Services.AddApplicationLayer();
+builder.Services.AddDataAccessLayer(new DatabaseSettings(builder.Configuration.GetConnectionString("Default")!));
 
-namespace TestTask.Web;
+var app = builder.Build();
 
-public class Program
+if (!app.Environment.IsDevelopment())
 {
-	public static void Main(string[] args)
-	{
-		var builder = WebApplication.CreateBuilder(args);
-		builder.Services.AddRazorPages();
-		builder.Services.AddApplicationLayer();
-		builder.Services.AddDAL(builder.Configuration);
-
-		var app = builder.Build();
-
-		if (!app.Environment.IsDevelopment())
-		{
-			app.UseExceptionHandler("/Error");
-			app.UseHsts();
-		}
-
-		app.UseHttpsRedirection();
-		app.UseStaticFiles();
-		app.UseRouting();
-		app.UseAuthorization();
-		app.MapRazorPages();
-
-		if (app.Environment.IsDevelopment())
-		{
-			app.MigrateDatabase();
-		}
-
-		app.Run();
-	}
+	app.UseExceptionHandler("/Error");
+	app.UseHsts();
 }
+else
+{
+	app.UseDeveloperExceptionPage();
+}
+
+app.UseHttpsRedirection();
+app.UseStaticFiles();
+app.UseRouting();
+
+app.UseAuthentication();
+app.UseAuthorization();
+		
+app.MapRazorPages();
+
+if (app.Environment.IsDevelopment())
+{
+	app.MigrateDatabase();
+}
+
+app.Run();

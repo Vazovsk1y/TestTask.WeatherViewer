@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using TestTask.DAL;
+using TestTask.DAL.PostgreSQL;
 
-namespace TestTask.Web;
+namespace TestTask.Web.Extensions;
 
-public static class Extensions
+public static class Common
 {
 	public static void MigrateDatabase(this WebApplication application)
 	{

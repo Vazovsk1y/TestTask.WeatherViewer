@@ -1,0 +1,101 @@
+﻿@page
+@using TestTask.Application.Contracts
+@using TestTask.Web.Extensions
+@model TestTask.Web.Pages.Weather.Records.View
+
+
+<div class="container mt-4">
+    @if (Model.CurrentPage is not null)
+    {
+        var prevDisabled = Model.CurrentPage is { HasPreviousPage: false } ? "disabled" : string.Empty;
+        var nextDisabled = Model.CurrentPage is { HasNextPage: false } ? "disabled" : string.Empty;
+        var previousPageIndex = Model.CurrentPage.PageIndex - 1;
+        var nextPageIndex = Model.CurrentPage.PageIndex + 1;
+        
+        <div class="d-flex justify-content-between mb-3">
+            <h2 class="h3">@($"{Model.CurrentPage.WeatherArchive.Title} {Model.CurrentPage.WeatherArchive.ToViewModel().LocalityInfo}")</h2>
+        </div>
+
+        <select asp-for="BindingModel.SelectedMonth" asp-items="Html.GetEnumSelectList<Months>()" onchange="applyFilters()"></select>
+        <select asp-for="BindingModel.SelectedYear" asp-items="View.Years" onchange="applyFilters()">
+            <option value="">None</option>
+        </select>
+
+        <table class="table table-striped table-hover">
+            <thead class="thead-dark">
+            <tr>
+                <th>Measurement date</th>
+                <th>Measurement time</th>
+                <th>Air temperature, °C</th>
+                <th>Air humidity, %</th>
+                <th>Dew point, °C</th>
+                <th>Atmospheric pressure, mm Hg</th>
+                <th>Wind direction</th>
+                <th>Wind speed, m/s</th>
+                <th>Cloudiness, %</th>
+                <th>Lower cloud base, m</th>
+                <th>Horizontal visibility, km</th>
+                <th>Weather phenomena</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var record in Model.CurrentPage.Items.Select(e => e.ToViewModel()))
+            {
+                <tr>
+                    <td>@record.MeasurementDate</td>
+                    <td>@record.MeasurementTime</td>
+                    <td>@record.AirTemperature</td>
+                    <td>@record.AirHumidity</td>
+                    <td>@record.DewPoint</td>
+                    <td>@record.AirPressure</td>
+                    <td>@record.WindDirection</td>
+                    <td>@record.WindSpeed</td>
+                    <td>@record.Clouds</td>
+                    <td>@record.LowCloudBoundary</td>
+                    <td>@record.HorizontalVisibility</td>
+                    <td>@record.WeatherPhenomena</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+
+        <div class="d-flex justify-content-end align-items-center mt-4">
+            <a asp-page="/Weather/Records/View"
+               asp-route-weatherArchiveId="@Model.CurrentPage.WeatherArchive.Id"
+               asp-route-byYear="@Model.BindingModel.SelectedYear"
+               asp-route-byMonth="@Model.BindingModel.SelectedMonth"
+               asp-route-pageIndex="@previousPageIndex"
+               class="btn btn-primary @prevDisabled">
+                Previous
+            </a>
+
+            <span class="mx-3">Page @Model.CurrentPage.PageIndex of @Model.CurrentPage.TotalPages</span>
+
+            <a asp-page="/Weather/Records/View"
+               asp-route-weatherArchiveId="@Model.CurrentPage.WeatherArchive.Id"
+               asp-route-byYear="@Model.BindingModel.SelectedYear"
+               asp-route-byMonth="@Model.BindingModel.SelectedMonth"
+               asp-route-pageIndex="@nextPageIndex"
+               class="btn btn-primary @nextDisabled">
+                Next
+            </a>
+        </div>
+
+        <script type="text/javascript">
+	function applyFilters() {
+		let selectedMonth = document.getElementById("BindingModel_SelectedMonth").value;
+		let selectedYear = document.getElementById("BindingModel_SelectedYear").value;
+		let pageIndex = '@Model.CurrentPage.PageIndex';
+		let archiveId = '@Model.CurrentPage.WeatherArchive.Id';
+		
+		let byYearSegment = '';
+		if (selectedYear !== '')
+		{
+			byYearSegment = `&byYear=${selectedYear}`;
+		}
+
+		window.location.href = `/Weather/Records/View?weatherArchiveId=${archiveId}${byYearSegment}&byMonth=${selectedMonth}&pageIndex=${pageIndex}`;
+	}
+    </script>
+    }
+</div>
