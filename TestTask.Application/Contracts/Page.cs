@@ -1,6 +1,6 @@
 ﻿namespace TestTask.Application.Contracts;
 
-public abstract record Page<TItem>
+public record Page<TItem>
 {
 	private const int StartCountingFrom = 1;
 
@@ -8,7 +8,7 @@ public abstract record Page<TItem>
 
 	public int PageIndex { get; }
 
-	public int TotalCount { get; }
+	public int TotalItemsCount { get; }
 
 	public int TotalPages { get; }
 
@@ -16,17 +16,17 @@ public abstract record Page<TItem>
 
 	public bool HasPreviousPage => PageIndex > StartCountingFrom;
 
-	protected Page(
+	public Page(
 		IReadOnlyCollection<TItem> items,
-		int totalItemsCount,
+		int totalItemsItemsCount,
 		PagingOptions? pagingOptions = null)
 	{
-		Validate(items, totalItemsCount, pagingOptions);
+		Validate(items, totalItemsItemsCount, pagingOptions);
 
 		Items = items;
-		TotalCount = totalItemsCount;
-		PageIndex = pagingOptions is null ? StartCountingFrom : pagingOptions.PageIndex;
-		TotalPages = CalculateTotalPages(pagingOptions, totalItemsCount);
+		TotalItemsCount = totalItemsItemsCount;
+		PageIndex = pagingOptions?.PageIndex ?? StartCountingFrom;
+		TotalPages = CalculateTotalPages(pagingOptions, totalItemsItemsCount);
 	}
 
 	private static int CalculateTotalPages(PagingOptions? pagingOptions, int totalItemsCount)
@@ -44,24 +44,22 @@ public abstract record Page<TItem>
 		int totalItemsCount,
 		PagingOptions? pagingOptions)
 	{
-		if (pagingOptions is { PageIndex: <= 0 })
+		switch (pagingOptions)
 		{
-			throw new ArgumentException("Page index must be greater than zero.");
-		}
-
-		if (pagingOptions is { PageSize: <= 0 })
-		{
-			throw new ArgumentException("Page size must be greater than zero.");
+			case { PageIndex: <= 0 }:
+				throw new ArgumentException("Page index must be greater than zero.");
+			case { PageSize: <= 0 }:
+				throw new ArgumentException("Page size must be greater than zero.");
 		}
 
 		if (items.Count > totalItemsCount)
 		{
-			throw new ArgumentException("Total items count can't be lower than current items count.");
+			throw new ArgumentException("Total items count must be greater than or equal page items count.");
 		}
 
 		if (pagingOptions is null && totalItemsCount != items.Count)
 		{
-			throw new ArgumentException("If paging options is not passed, total items count must be equal to current items count.");
+			throw new ArgumentException("If paging options is null total items count must be equal to page items count.");
 		}
 	}
 }

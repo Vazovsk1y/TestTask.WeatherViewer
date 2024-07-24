@@ -1,39 +1,82 @@
 ﻿namespace TestTask.Application.Contracts;
 
-public record Response
+public class Response
 {
-	public string ErrorMessage { get; }
+	public bool IsFailure => !IsSuccess;
 
 	public bool IsSuccess { get; }
 
-	public bool IsFailure => !IsSuccess;
+	public IReadOnlyCollection<Error> Errors { get; }
 
-	protected Response(bool isSuccess, string? errorMessage) 
+	protected Response(bool isSuccess, Error error)
 	{
+		if (isSuccess && error != Error.None || !isSuccess && error == Error.None)
+		{
+            throw new InvalidOperationException("Unable create response.");
+        }
+
 		IsSuccess = isSuccess;
-		ErrorMessage = errorMessage ?? string.Empty;
+		Errors = isSuccess ? Array.Empty<Error>() : new List<Error>() { error };
 	}
 
-	public static Response Success() => new(true, null);
+    protected Response(bool isSuccess, IEnumerable<Error> errors)
+    {
+	    var errorsCollection = errors as List<Error> ?? errors.ToList();
+	    if (isSuccess && errorsCollection.Count != 0
+            || !isSuccess && errorsCollection.Distinct().Count() != errorsCollection.Count
+            || !isSuccess && errorsCollection.Count == 0
+            || !isSuccess && errorsCollection.Contains(Error.None))
+		{
+            throw new InvalidOperationException("Unable create response.");
+        }
 
-	public static Response<T> Success<T>(T value) => new(value, true, null);
+        IsSuccess = isSuccess;
+        Errors = isSuccess ? Array.Empty<Error>() : errorsCollection;
+    }
 
-	public static Response Failure(string errorMessage) => new(false, errorMessage);
+    public static Response Success() => new(true, Error.None);
 
-	public static Response<T> Failure<T>(string errorMessage) => new(default, false, errorMessage);
+	public static Response<T> Success<T>(T value) => new(value, true, Error.None);
+
+	public static Response Failure(Error error) => new(false, error);
+
+	public static Response<T> Failure<T>(Error error) => new(default, false, error);
+
+    public static Response Failure(IEnumerable<Error> errors) => new(false, errors);
+
+    public static Response<T> Failure<T>(IEnumerable<Error> errors) => new(default, false, errors);
 }
 
-public record Response<T> : Response
+public class Response<TValue> : Response
 {
-	private readonly T? _value;
+	private readonly TValue? _value;
 
-	protected internal Response(T? value, bool isSuccess, string? errorMessage) : base(isSuccess, errorMessage)
+	protected internal Response(TValue? value, bool isSuccess, Error error) : base(isSuccess, error)
 		=> _value = value;
-		
-	public T Value => IsFailure ?
-		throw new InvalidOperationException("The value of failed result can't be accessed.")
+
+    protected internal Response(TValue? value, bool isSuccess, IEnumerable<Error> errors) : base(isSuccess, errors)
+        => _value = value;
+
+    public TValue Value => IsFailure ?
+		throw new InvalidOperationException("The value of failed response can't be accessed.")
 		:
 		_value!;
 
-	public static implicit operator Response<T>(T value) => new(value, true, null);
+	public static implicit operator Response<TValue>(TValue value) => new(value, true, Error.None);
+}
+
+public record Error
+{
+	public static readonly Error None = new (string.Empty, string.Empty);
+
+	public string Code { get; }
+	public string Text { get; }
+
+	public Error(string code, string text)
+	{
+		ArgumentNullException.ThrowIfNull(text);
+		ArgumentNullException.ThrowIfNull(code);
+		Text = text;
+		Code = code;
+	}
 }

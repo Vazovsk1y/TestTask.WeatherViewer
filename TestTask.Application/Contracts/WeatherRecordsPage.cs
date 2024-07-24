@@ -2,7 +2,9 @@
 
 public record WeatherRecordsPage : Page<WeatherRecordDTO>
 {
-	public WeatherRecordsPage(IReadOnlyCollection<WeatherRecordDTO> items, int totalItemsCount, PagingOptions? pagingOptions = null) : base(items, totalItemsCount, pagingOptions)
-	{
-	}
+    public WeatherArchiveDTO WeatherArchive { get; }
+    public WeatherRecordsPage(IReadOnlyCollection<WeatherRecordDTO> items, int totalItemsItemsCount, WeatherArchiveDTO weatherArchive, PagingOptions? pagingOptions = null) : base(items, totalItemsItemsCount, pagingOptions)
+    {
+        WeatherArchive = weatherArchive;
+    }
 }

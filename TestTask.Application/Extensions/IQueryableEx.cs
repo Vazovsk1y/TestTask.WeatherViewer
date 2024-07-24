@@ -1,17 +1,23 @@
-﻿using System.Text;
-using TestTask.Application.Contracts;
-using TestTask.DAL.Models;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+﻿using TestTask.Application.Contracts;
+using TestTask.DAL.PostgreSQL.Models;
 
-namespace TestTask.Application;
+namespace TestTask.Application.Extensions;
 
-public static class Extensions
+public static class IQueryableEx
 {
 	public static IQueryable<T> ApplyPaging<T>(this IQueryable<T> collection, PagingOptions? pagingOptions)
 	{
 		if (pagingOptions is null)
 		{
 			return collection;
+		}
+		
+		switch (pagingOptions)
+		{
+			case { PageIndex: <= 0 }:
+				throw new ArgumentException("Page index must be greater than zero.");
+			case { PageSize: <= 0 }:
+				throw new ArgumentException("Page size must be greater than zero.");
 		}
 
 		return collection
@@ -28,7 +34,7 @@ public static class Extensions
 
 		if (filteringOptions.ByMonth != Months.None)
 		{
-			weatherRecords = weatherRecords.Where(e => e.MeasurementDate.Month == (int)filteringOptions!.ByMonth);
+			weatherRecords = weatherRecords.Where(e => e.MeasurementDate.Month == (int)filteringOptions.ByMonth);
 		}
 
 		if (filteringOptions.ByYear is not null)
